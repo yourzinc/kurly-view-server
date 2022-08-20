@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -39,5 +40,13 @@ public class ProductService {
         return ProductListResponseDto.builder()
                 .products(product_previews)
                 .build();
+    }
+
+    /**
+     * 상품 상세 설명
+     */
+    public Optional<Product> findProductDetail(String id)
+    {
+        return productRepository.findById(id);
     }
 }
