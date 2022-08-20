@@ -1,12 +1,13 @@
 package com.kurly.kurlyview.controller;
 
+import com.kurly.kurlyview.domain.product.Product;
 import com.kurly.kurlyview.dto.ProductListResponseDto;
 import com.kurly.kurlyview.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RequiredArgsConstructor
@@ -17,8 +18,13 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/products")
-    public ProductListResponseDto listAll(){
+    public ProductListResponseDto getProductList(){
         return productService.findProductPreview();
+    }
+
+    @GetMapping("/products/{productId}")
+    public ResponseEntity<?> getProductDetail(@PathVariable String productId){
+        return ResponseEntity.ok(productService.findProductDetail(productId));
     }
 
 }
