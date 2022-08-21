@@ -9,6 +9,7 @@ import com.kurly.kurlyview.repository.MemberRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.SpringTransactionAnnotationParser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -91,6 +92,8 @@ public class MemberService {
         for (Member.Kurlyview kurlyview : kurlyviews)
             if (kurlyview.getId().equals(id)) {
                 kurlyviews.remove(kurlyview);
+                memberRepository.save(member);
+
                 return TestResponseDto.builder()
                         .message("success")
                         .build();
