@@ -38,4 +38,12 @@ public class Review {
     @Nullable
     private String photo;
     private Date date;
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    public static class Reviews {
+        private List<Review> reviews;
+    }
 }

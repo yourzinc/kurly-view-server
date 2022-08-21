@@ -112,4 +112,11 @@ public class ProductService {
 
         return review;
     }
+
+    /**
+     * 상품의 리뷰 전체
+     */
+    public List<Review> findProductReviews(String productId) {
+        return reviewRepository.findAllByProductId(productId);
+    }
 }
