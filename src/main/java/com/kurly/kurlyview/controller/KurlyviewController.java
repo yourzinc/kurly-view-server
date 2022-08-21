@@ -19,4 +19,9 @@ public class KurlyviewController {
     public ResponseEntity<?> subscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @RequestBody KurlyviewSubscribeRequestDto id){
         return ResponseEntity.ok(memberService.subscribe(token, id));
     }
+
+    @PostMapping("/kurlyviews/unsubscribe")
+    public ResponseEntity<?> unsubscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @RequestBody KurlyviewSubscribeRequestDto id){
+        return ResponseEntity.ok(memberService.unsubscribe(token, id));
+    }
 }

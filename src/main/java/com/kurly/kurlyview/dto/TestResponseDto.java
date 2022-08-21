@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class TestResponseDto {
-    private boolean success;
+    private String message;
 }

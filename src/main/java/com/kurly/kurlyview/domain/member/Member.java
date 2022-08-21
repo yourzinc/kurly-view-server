@@ -31,6 +31,7 @@ public class Member implements UserDetails {
     @Getter
     @Data
     public static class Kurlyview {
+        private String id;
         private String email;
         private String name;
     }
