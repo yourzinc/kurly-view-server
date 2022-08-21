@@ -64,9 +64,11 @@ public class JwtTokenProvider {
     }
 
     public String getUserEmail(String token) {
-        System.out.println(token);
-        System.out.println(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody());
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getUserId(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getId();
     }
 
     public String resolveAccessToken(HttpServletRequest request) {
