@@ -28,26 +28,4 @@ public class ProductController {
     public ResponseEntity<?> getProductDetail(@PathVariable String productId){
         return ResponseEntity.ok(productService.findProductDetail(productId));
     }
-
-    /**
-     * 리뷰 작성하기
-     */
-    @PostMapping("/products/{productId}/reviews")
-    public ResponseEntity<?> postReview(@RequestHeader("X-ACCESS-TOKEN") String token,
-                                        @PathVariable String productId,
-                                        @RequestBody LeaveReviewRequestDto dto){
-        return ResponseEntity.ok(productService.leaveReview(token, productId, dto));
-    }
-
-    /**
-     * 상품 리뷰 목록
-     */
-    @GetMapping("/products/{productId}/reviews")
-    public ResponseEntity<?> getProductReviews(@PathVariable String productId){
-        return ResponseEntity.ok(
-                Review.Reviews
-                        .builder()
-                        .reviews(productService.findProductReviews(productId))
-                        .build());
-    }
 }
