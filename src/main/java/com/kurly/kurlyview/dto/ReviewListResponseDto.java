@@ -8,6 +8,6 @@ import java.util.List;
 
 @Builder
 @Getter
-public class UserReviewListResponseDto {
+public class ReviewListResponseDto {
     private List<Review> reviews;
 }

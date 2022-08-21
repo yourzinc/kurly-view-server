@@ -3,7 +3,7 @@ package com.kurly.kurlyview.service;
 import com.kurly.kurlyview.domain.member.Member;
 import com.kurly.kurlyview.domain.review.Review;
 import com.kurly.kurlyview.dto.LeaveReviewRequestDto;
-import com.kurly.kurlyview.dto.UserReviewListResponseDto;
+import com.kurly.kurlyview.dto.ReviewListResponseDto;
 import com.kurly.kurlyview.repository.MemberRepository;
 import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
@@ -82,7 +82,7 @@ public class ReviewService {
     /**
      * 사용자의 리뷰 전체
      */
-    public UserReviewListResponseDto findUserReviews(String memberId) {
+    public ReviewListResponseDto findUserReviews(String memberId) {
 
         // token 으로 로그인한 회원인지 확인
         // 구독중인 kurlyview 인지 확인하기
@@ -98,7 +98,7 @@ public class ReviewService {
 
 
         // memberId가 작성한 리뷰 검색
-        return UserReviewListResponseDto.builder()
+        return ReviewListResponseDto.builder()
                 .reviews(reviewRepository.findByMemberId(memberId))
                 .build();
     }
