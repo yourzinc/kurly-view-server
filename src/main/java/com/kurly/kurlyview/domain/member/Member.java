@@ -23,7 +23,18 @@ public class Member implements UserDetails {
     private String name;
     private String password;
 
-    private List<String> kurlyviews;
+    private List<Kurlyview> kurlyviews;
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Data
+    public static class Kurlyview {
+        private String id;
+        private String email;
+        private String name;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

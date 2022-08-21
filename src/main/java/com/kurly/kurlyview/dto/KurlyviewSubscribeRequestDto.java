@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TestResponseDto {
-    private String message;
+public class KurlyviewSubscribeRequestDto {
+    private String id;
 }
