@@ -2,7 +2,6 @@ package com.kurly.kurlyview.controller;
 
 import com.kurly.kurlyview.domain.review.Review;
 import com.kurly.kurlyview.dto.LeaveReviewRequestDto;
-import com.kurly.kurlyview.dto.UserReviewListResponseDto;
 import com.kurly.kurlyview.service.ProductService;
 import com.kurly.kurlyview.service.ReviewService;
 import lombok.RequiredArgsConstructor;

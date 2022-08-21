@@ -1,17 +1,18 @@
 package com.kurly.kurlyview.service;
 
 import com.kurly.kurlyview.domain.member.Member;
-import com.kurly.kurlyview.dto.KurlyviewSubscribeRequestDto;
-import com.kurly.kurlyview.dto.SignInRequestDto;
-import com.kurly.kurlyview.dto.TestResponseDto;
-import com.kurly.kurlyview.dto.TokenResponseDto;
+import com.kurly.kurlyview.domain.review.Review;
+import com.kurly.kurlyview.dto.*;
 import com.kurly.kurlyview.repository.MemberRepository;
+import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.SpringTransactionAnnotationParser;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,9 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
     private final JwtTokenProvider tokenProvider;
+
     @Transactional
     public TokenResponseDto login(SignInRequestDto requestDto) {
 
@@ -133,5 +136,31 @@ public class MemberService {
             is_follow = true;
 
         return is_follow;
+    }
+
+    public ReviewListResponseDto findAllKurlyview(String token) {
+        List<Review> reviews = new ArrayList<Review>();
+
+        String email = tokenProvider.getUserEmail(token);
+
+        // 이메일 NULL 처리
+        if (email == null) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
+
+        List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
+
+        kurlyviews.stream().forEach(kurlyview ->
+                reviews.addAll(reviewRepository.findByMemberId(kurlyview.getId()))
+        );
+
+        reviews.sort(Comparator.comparing(Review::getDate).reversed());
+
+        return ReviewListResponseDto.builder()
+                .reviews(reviews)
+                .build();
     }
 }
