@@ -1,6 +1,7 @@
 package com.kurly.kurlyview.controller;
 
 import com.kurly.kurlyview.domain.product.Product;
+import com.kurly.kurlyview.domain.review.Review;
 import com.kurly.kurlyview.dto.LeaveReviewRequestDto;
 import com.kurly.kurlyview.dto.ProductListResponseDto;
 import com.kurly.kurlyview.service.ProductService;
@@ -36,5 +37,17 @@ public class ProductController {
                                         @PathVariable String productId,
                                         @RequestBody LeaveReviewRequestDto dto){
         return ResponseEntity.ok(productService.leaveReview(token, productId, dto));
+    }
+
+    /**
+     * 상품 리뷰 목록
+     */
+    @GetMapping("/products/{productId}/reviews")
+    public ResponseEntity<?> getProductReviews(@PathVariable String productId){
+        return ResponseEntity.ok(
+                Review.Reviews
+                        .builder()
+                        .reviews(productService.findProductReviews(productId))
+                        .build());
     }
 }
