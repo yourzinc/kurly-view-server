@@ -24,4 +24,9 @@ public class KurlyviewController {
     public ResponseEntity<?> unsubscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String memberId){
         return ResponseEntity.ok(memberService.unsubscribe(token, memberId));
     }
+
+    @GetMapping("/kurlyviews/{memberId}/status")
+    public ResponseEntity<?> getSubscribeStatus(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String memberId){
+        return ResponseEntity.ok(memberService.subscribeStatue(token, memberId));
+    }
 }

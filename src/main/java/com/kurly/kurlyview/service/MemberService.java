@@ -103,4 +103,35 @@ public class MemberService {
                 .message("구독중인 컬리뷰가 아닙니다.")
                 .build();
     }
+
+    @Transactional
+    public Object subscribeStatue(String token, String id)
+    {
+        return TestResponseDto.builder()
+                .result(isfollowing(token, id))
+                .build();
+    }
+    public boolean isfollowing(String token, String id) {
+        boolean is_follow = false;
+
+        String email = tokenProvider.getUserEmail(token);
+
+        // 이메일 NULL 처리
+        if (email == null) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
+
+        List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
+
+        if (kurlyviews == null)
+            throw new IllegalArgumentException("구독 중인 컬리뷰가 존재하지 않습니다.");
+
+        if (kurlyviews.stream().anyMatch(kurlyview -> kurlyview.getId().equals(id)))
+            is_follow = true;
+
+        return is_follow;
+    }
 }
