@@ -9,6 +9,7 @@ import com.kurly.kurlyview.repository.MemberRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.SpringTransactionAnnotationParser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class MemberService {
                 .build();
     }
     @Transactional
-    public TestResponseDto subscribe(String token, KurlyviewSubscribeRequestDto dto) {
+    public TestResponseDto subscribe(String token, String id) {
 
         String email = tokenProvider.getUserEmail(token);
 
@@ -51,12 +52,12 @@ public class MemberService {
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
 
         if (kurlyviews != null)
-            if (kurlyviews.stream().anyMatch(k -> k.getId().equals(dto.getId())) == true)
+            if (kurlyviews.stream().anyMatch(k -> k.getId().equals(id)) == true)
                 return TestResponseDto.builder()
                         .message("이미 구독중인 컬리뷰입니다.")
                         .build();
 
-        Optional<Member> new_kurlyview = memberRepository.findById(dto.getId());
+        Optional<Member> new_kurlyview = memberRepository.findById(id);
 
         kurlyviews.add(Member.Kurlyview.builder()
                 .id(new_kurlyview.get().getId())
@@ -72,7 +73,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Object unsubscribe(String token, KurlyviewSubscribeRequestDto dto) {
+    public Object unsubscribe(String token, String id) {
         String email = tokenProvider.getUserEmail(token);
 
         // 이메일 NULL 처리
@@ -89,8 +90,10 @@ public class MemberService {
             throw new IllegalArgumentException("구독 중인 컬리뷰가 존재하지 않습니다.");
 
         for (Member.Kurlyview kurlyview : kurlyviews)
-            if (kurlyview.getId().equals(dto.getId())) {
+            if (kurlyview.getId().equals(id)) {
                 kurlyviews.remove(kurlyview);
+                memberRepository.save(member);
+
                 return TestResponseDto.builder()
                         .message("success")
                         .build();
@@ -99,5 +102,36 @@ public class MemberService {
         return TestResponseDto.builder()
                 .message("구독중인 컬리뷰가 아닙니다.")
                 .build();
+    }
+
+    @Transactional
+    public Object subscribeStatue(String token, String id)
+    {
+        return TestResponseDto.builder()
+                .result(isfollowing(token, id))
+                .build();
+    }
+    public boolean isfollowing(String token, String id) {
+        boolean is_follow = false;
+
+        String email = tokenProvider.getUserEmail(token);
+
+        // 이메일 NULL 처리
+        if (email == null) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
+
+        List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
+
+        if (kurlyviews == null)
+            throw new IllegalArgumentException("구독 중인 컬리뷰가 존재하지 않습니다.");
+
+        if (kurlyviews.stream().anyMatch(kurlyview -> kurlyview.getId().equals(id)))
+            is_follow = true;
+
+        return is_follow;
     }
 }
