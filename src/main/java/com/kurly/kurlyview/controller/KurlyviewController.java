@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class KurlyviewController {
     private final MemberService memberService;
 
-    @PostMapping("/kurlyviews")
-    public ResponseEntity<?> subscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @RequestBody KurlyviewSubscribeRequestDto id){
-        return ResponseEntity.ok(memberService.subscribe(token, id));
+    @GetMapping("/kurlyviews/{memberId}")
+    public ResponseEntity<?> subscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String memberId){
+        return ResponseEntity.ok(memberService.subscribe(token, memberId));
     }
 
-    @PostMapping("/kurlyviews/unsubscribe")
-    public ResponseEntity<?> unsubscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @RequestBody KurlyviewSubscribeRequestDto id){
-        return ResponseEntity.ok(memberService.unsubscribe(token, id));
+    @DeleteMapping("/kurlyviews/{memberId}")
+    public ResponseEntity<?> unsubscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String memberId){
+        return ResponseEntity.ok(memberService.unsubscribe(token, memberId));
     }
 }

@@ -36,7 +36,7 @@ public class MemberService {
                 .build();
     }
     @Transactional
-    public TestResponseDto subscribe(String token, KurlyviewSubscribeRequestDto dto) {
+    public TestResponseDto subscribe(String token, String id) {
 
         String email = tokenProvider.getUserEmail(token);
 
@@ -51,12 +51,12 @@ public class MemberService {
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
 
         if (kurlyviews != null)
-            if (kurlyviews.stream().anyMatch(k -> k.getId().equals(dto.getId())) == true)
+            if (kurlyviews.stream().anyMatch(k -> k.getId().equals(id)) == true)
                 return TestResponseDto.builder()
                         .message("이미 구독중인 컬리뷰입니다.")
                         .build();
 
-        Optional<Member> new_kurlyview = memberRepository.findById(dto.getId());
+        Optional<Member> new_kurlyview = memberRepository.findById(id);
 
         kurlyviews.add(Member.Kurlyview.builder()
                 .id(new_kurlyview.get().getId())
@@ -72,7 +72,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Object unsubscribe(String token, KurlyviewSubscribeRequestDto dto) {
+    public Object unsubscribe(String token, String id) {
         String email = tokenProvider.getUserEmail(token);
 
         // 이메일 NULL 처리
@@ -89,7 +89,7 @@ public class MemberService {
             throw new IllegalArgumentException("구독 중인 컬리뷰가 존재하지 않습니다.");
 
         for (Member.Kurlyview kurlyview : kurlyviews)
-            if (kurlyview.getId().equals(dto.getId())) {
+            if (kurlyview.getId().equals(id)) {
                 kurlyviews.remove(kurlyview);
                 return TestResponseDto.builder()
                         .message("success")
