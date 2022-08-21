@@ -13,4 +13,5 @@ public class TokenResponseDto {
     private boolean success;
     private String accessToken;
     // private String refreshToken;
+    private String name;
 }

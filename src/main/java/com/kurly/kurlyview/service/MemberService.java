@@ -27,6 +27,7 @@ public class MemberService {
         return TokenResponseDto.builder()
                 .success(true)
                 .accessToken(tokenProvider.createToken(member.getId(), member.getEmail()))
+                .name(member.getName())
                 .build();
     }
 }
