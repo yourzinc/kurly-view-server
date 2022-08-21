@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .and()
 
                 .authorizeRequests()
+                .antMatchers("/api/products/{productId}/reviews").authenticated()
                 .antMatchers("/api/products/**").permitAll()
                 .antMatchers("/api/auth/login").permitAll()
                 .anyRequest().authenticated()
