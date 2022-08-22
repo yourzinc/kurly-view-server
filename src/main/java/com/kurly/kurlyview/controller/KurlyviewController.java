@@ -3,6 +3,7 @@ package com.kurly.kurlyview.controller;
 import com.kurly.kurlyview.dto.KurlyviewSubscribeRequestDto;
 import com.kurly.kurlyview.dto.SignInRequestDto;
 import com.kurly.kurlyview.service.MemberService;
+import com.kurly.kurlyview.service.RecommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import java.util.Stack;
 @RestController
 public class KurlyviewController {
     private final MemberService memberService;
+    private final RecommandService recommandService;
 
     @GetMapping("/kurlyviews")
     public ResponseEntity<?> getKurlyviews(@RequestHeader("Authorization") String token) {
@@ -36,5 +38,13 @@ public class KurlyviewController {
     @GetMapping("/kurlyviews/{memberId}/status")
     public ResponseEntity<?> getSubscribeStatus(@RequestHeader("Authorization") String token, @PathVariable String memberId){
         return ResponseEntity.ok(memberService.subscribeStatue(token, memberId));
+    }
+
+    /**
+     * 컬리뷰 상품 추천 목록
+     */
+    @GetMapping("/kurlyview-products")
+    public ResponseEntity<?> getKurlyviewRecommand(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(recommandService.recommandProduct(token));
     }
 }
