@@ -63,7 +63,7 @@ public class RecommandService {
                     ProductListResponseDto.ProductPreview.builder()
                             .title(product.getTitle())
                             .id(product.getId())
-                            .photo(product.getTitle())
+                            .photo(product.getPhoto())
                             .price(product.getPrice())
                             .build()
             );
