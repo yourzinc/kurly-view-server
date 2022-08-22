@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                .addFilterBefore(new JwtAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

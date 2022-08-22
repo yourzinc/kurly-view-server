@@ -6,7 +6,9 @@ import com.kurly.kurlyview.dto.*;
 import com.kurly.kurlyview.repository.MemberRepository;
 import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
+import com.kurly.kurlyview.security.jwt.UserAuthentication;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.SpringTransactionAnnotationParser;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,16 +35,18 @@ public class MemberService {
         if ( !requestDto.getPassword().equals(member.getPassword()))
             throw new IllegalArgumentException("ID/PW가 일치하지 않습니다");
 
+        Authentication authentication = new UserAuthentication(member.getId(), null, null);
+
         return TokenResponseDto.builder()
                 .success(true)
-                .accessToken(tokenProvider.createToken(member.getId(), member.getEmail()))
+                .accessToken(tokenProvider.generateToken(authentication))
                 .name(member.getName())
                 .build();
     }
     @Transactional
     public TestResponseDto subscribe(String token, String id) {
 
-        String email = tokenProvider.getUserEmail(token);
+        String email = tokenProvider.getUserIdFromJWT(token);
 
         // 이메일 NULL 처리
         if (email == null) {
@@ -77,7 +81,7 @@ public class MemberService {
 
     @Transactional
     public Object unsubscribe(String token, String id) {
-        String email = tokenProvider.getUserEmail(token);
+        String email = tokenProvider.getUserIdFromJWT(token);
 
         // 이메일 NULL 처리
         if (email == null) {
@@ -117,7 +121,7 @@ public class MemberService {
     public boolean isfollowing(String token, String id) {
         boolean is_follow = false;
 
-        String email = tokenProvider.getUserEmail(token);
+        String email = tokenProvider.getUserIdFromJWT(token);
 
         // 이메일 NULL 처리
         if (email == null) {
@@ -141,15 +145,17 @@ public class MemberService {
     public ReviewListResponseDto findAllKurlyview(String token) {
         List<Review> reviews = new ArrayList<Review>();
 
-        String email = tokenProvider.getUserEmail(token);
+        String _id = tokenProvider.getUserIdFromJWT(token);
+        System.out.println("is-following : " + _id);
 
         // 이메일 NULL 처리
-        if (email == null) {
+        if (_id == null) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
+        System.out.println("_id : " + _id);
+        Member member = memberRepository.findById(_id)
+                .orElseThrow(() -> new IllegalArgumentException("가입된 ID이 아닙니다."));
 
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
 

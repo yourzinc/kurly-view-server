@@ -1,12 +1,12 @@
 package com.kurly.kurlyview.controller;
 
 import com.kurly.kurlyview.dto.TestResponseDto;
+import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
+import com.kurly.kurlyview.security.jwt.UserAuthentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RequiredArgsConstructor

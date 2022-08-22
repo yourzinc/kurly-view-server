@@ -18,22 +18,23 @@ public class KurlyviewController {
     private final MemberService memberService;
 
     @GetMapping("/kurlyviews")
-    public ResponseEntity<?> getKurlyviews(@RequestHeader("X-ACCESS-TOKEN") String token) {
+    public ResponseEntity<?> getKurlyviews(@RequestHeader("Authorization") String token) {
+        System.out.println("getKurlyviews");
         return ResponseEntity.ok(memberService.findAllKurlyview(token));
     }
 
     @GetMapping("/kurlyviews/{memberId}")
-    public ResponseEntity<?> subscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String memberId){
+    public ResponseEntity<?> subscribeKurlyview(@RequestHeader("Authorization") String token, @PathVariable String memberId){
         return ResponseEntity.ok(memberService.subscribe(token, memberId));
     }
 
     @DeleteMapping("/kurlyviews/{memberId}")
-    public ResponseEntity<?> unsubscribeKurlyview(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String memberId){
+    public ResponseEntity<?> unsubscribeKurlyview(@RequestHeader("Authorization") String token, @PathVariable String memberId){
         return ResponseEntity.ok(memberService.unsubscribe(token, memberId));
     }
 
     @GetMapping("/kurlyviews/{memberId}/status")
-    public ResponseEntity<?> getSubscribeStatus(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String memberId){
+    public ResponseEntity<?> getSubscribeStatus(@RequestHeader("Authorization") String token, @PathVariable String memberId){
         return ResponseEntity.ok(memberService.subscribeStatue(token, memberId));
     }
 }
