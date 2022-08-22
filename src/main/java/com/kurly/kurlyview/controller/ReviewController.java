@@ -20,7 +20,7 @@ public class ReviewController {
      * 리뷰 작성하기
      */
     @PostMapping("/products/{productId}/reviews")
-    public ResponseEntity<?> postReview(@RequestHeader("X-ACCESS-TOKEN") String token,
+    public ResponseEntity<?> postReview(@RequestHeader("Authorization") String token,
                                         @PathVariable String productId,
                                         @RequestBody LeaveReviewRequestDto dto){
         return ResponseEntity.ok(reviewService.leaveReview(token, productId, dto));
