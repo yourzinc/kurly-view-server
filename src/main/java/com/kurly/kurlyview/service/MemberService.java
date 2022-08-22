@@ -46,14 +46,14 @@ public class MemberService {
     @Transactional
     public TestResponseDto subscribe(String token, String id) {
 
-        String email = tokenProvider.getUserIdFromJWT(token);
+        String _id = tokenProvider.getUserIdFromJWT(token);
 
         // 이메일 NULL 처리
-        if (email == null) {
+        if (_id == null) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findById(_id)
                 .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
 
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
@@ -81,14 +81,14 @@ public class MemberService {
 
     @Transactional
     public Object unsubscribe(String token, String id) {
-        String email = tokenProvider.getUserIdFromJWT(token);
+        String _id = tokenProvider.getUserIdFromJWT(token);
 
         // 이메일 NULL 처리
-        if (email == null) {
+        if (_id == null) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findById(_id)
                 .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
 
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
@@ -121,14 +121,14 @@ public class MemberService {
     public boolean isfollowing(String token, String id) {
         boolean is_follow = false;
 
-        String email = tokenProvider.getUserIdFromJWT(token);
+        String _id = tokenProvider.getUserIdFromJWT(token);
 
         // 이메일 NULL 처리
-        if (email == null) {
+        if (_id == null) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findById(_id)
                 .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
 
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();

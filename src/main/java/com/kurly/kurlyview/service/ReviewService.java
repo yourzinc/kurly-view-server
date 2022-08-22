@@ -27,9 +27,9 @@ public class ReviewService {
     @Transactional
     public Review leaveReview(String token, String product_id, LeaveReviewRequestDto dto) {
         // token 으로 member_id , member_name 확인
-        String email = tokenProvider.getUserIdFromJWT(token);
+        String id = tokenProvider.getUserIdFromJWT(token);
 
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 아닙니다."));
 
         // type = 0 이면 일반 식품 -> rating 만
