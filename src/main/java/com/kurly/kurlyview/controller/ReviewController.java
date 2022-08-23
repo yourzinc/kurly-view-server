@@ -51,7 +51,7 @@ public class ReviewController {
     /**
      * 상품 리뷰 월간 평점
      */
-    @GetMapping("/products/{productId}/review/montly-rate")
+    @GetMapping("/products/{productId}/review/monthly-rate")
     public ResponseEntity<?> getReviewMonthlyRate(@PathVariable String productId) {
         return ResponseEntity.ok(reviewService.findMontlyRate(productId));
     }
@@ -59,7 +59,7 @@ public class ReviewController {
     /**
      * 상품 리뷰 주간 평점
      */
-    @GetMapping("/products/{productId}/review/weeklly-rate")
+    @GetMapping("/products/{productId}/review/weekly-rate")
     public ResponseEntity<?> getReviewWeeklyRate(@PathVariable String productId) {
         return ResponseEntity.ok(reviewService.findWeeklyRate(productId));
     }
