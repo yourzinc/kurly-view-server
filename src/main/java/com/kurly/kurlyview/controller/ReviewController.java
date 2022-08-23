@@ -6,6 +6,7 @@ import com.kurly.kurlyview.service.ProductService;
 import com.kurly.kurlyview.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
@@ -45,4 +46,21 @@ public class ReviewController {
     public ResponseEntity<?> getUserReviews(@PathVariable String memberId) {
         return ResponseEntity.ok(reviewService.findUserReviews(memberId));
     }
+
+
+    /**
+     * 상품 리뷰 월간 평점
+     */
+    @GetMapping("/products/{productId}/review/montly-rate")
+    public ResponseEntity<?> getReviewMonthlyRate(@PathVariable String productId) {
+        return ResponseEntity.ok(reviewService.findMontlyRate(productId));
+    }
+
+    /**
+     * 상품 리뷰 주간 평점
+     */
+//    @GetMapping("/products/{productId}/review/weeklly-rate")
+//    public ResponseEntity<?> getReviewWeeklyRate(@PathVariable String productId) {
+//        return ResponseEntity.ok(reviewService.findWeeklyRate(productId));
+//    }
 }
