@@ -21,14 +21,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request); //request에서 jwt 토큰을 꺼낸다.
 
             System.out.println(jwt);
-            if ((jwt != null) && JwtTokenProvider.validateToken(jwt)) {
+            if ( (jwt != null) && JwtTokenProvider.validateToken(jwt)) {
                 String userId = JwtTokenProvider.getUserIdFromJWT(jwt); //jwt에서 사용자 id를 꺼낸다.
 
-                log.info("userId: " + userId);
                 UserAuthentication authentication = new UserAuthentication(userId, null, null); //id를 인증한다.
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); //기본적으로 제공한 details 세팅
 
-                System.out.println(authentication);
                 SecurityContextHolder.getContext().setAuthentication(authentication); //세션에서 계속 사용하기 위해 securityContext에 Authentication 등록
             } else {
                 if (jwt != null) {
@@ -49,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         // log.info("bearerToken : " + bearerToken);
-        //if ((bearerToken != null) && bearerToken.startsWith("Bearer ")) {
+        // if ((bearerToken != null) && bearerToken.startsWith("Bearer ")) {
         //    log.info("Bearer exist");
         //    return bearerToken.substring("Bearer ".length());
         //}
