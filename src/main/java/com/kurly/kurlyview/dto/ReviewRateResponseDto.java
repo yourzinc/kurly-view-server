@@ -9,7 +9,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class MontlyRateResponseDto {
+public class ReviewRateResponseDto {
     private List<Rate> rating;
     @Nullable
     private List<Rate> fresh_score;
