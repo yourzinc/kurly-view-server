@@ -159,9 +159,15 @@ public class MemberService {
 
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
 
-        kurlyviews.stream().forEach(kurlyview ->
-                reviews.addAll(reviewRepository.findByMemberId(kurlyview.getId()))
-        );
+        if (kurlyviews == null)
+        {
+            kurlyviews = new ArrayList<>();
+        }
+        else {
+            kurlyviews.stream().forEach(kurlyview ->
+                    reviews.addAll(reviewRepository.findByMemberId(kurlyview.getId()))
+            );
+        }
 
         reviews.sort(Comparator.comparing(Review::getDate).reversed());
 
