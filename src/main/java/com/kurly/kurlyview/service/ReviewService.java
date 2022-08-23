@@ -1,22 +1,29 @@
 package com.kurly.kurlyview.service;
 
 import com.kurly.kurlyview.domain.member.Member;
+import com.kurly.kurlyview.domain.product.Rate;
 import com.kurly.kurlyview.domain.review.Review;
 import com.kurly.kurlyview.dto.LeaveReviewRequestDto;
-import com.kurly.kurlyview.dto.ReviewListResponseDto;
+import com.kurly.kurlyview.dto.MontlyRateResponseDto;
 import com.kurly.kurlyview.dto.UserReviewListResponseDto;
 import com.kurly.kurlyview.repository.MemberRepository;
 import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ReviewService {
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
@@ -48,7 +55,7 @@ public class ReviewService {
                     .rating(dto.getRating())
                     .content(dto.getContents())
                     .photo("https://res.cloudinary.com/rebelwalls/image/upload/b_black,c_fill,e_blur:2000,f_auto,fl_progressive,h_533,q_auto,w_800/v1479371015/article/R10921_image1")
-                    .date(new Date())
+                    .date(LocalDateTime.now())
                     .build();
         }
         else {
@@ -64,7 +71,7 @@ public class ReviewService {
                     .deliveryScore(dto.getDelivery_score())
                     .content(dto.getContents())
                     .photo("https://res.cloudinary.com/rebelwalls/image/upload/b_black,c_fill,e_blur:2000,f_auto,fl_progressive,h_533,q_auto,w_800/v1479371015/article/R10921_image1")
-                    .date(new Date())
+                    .date(LocalDateTime.now())
                     .build();
         }
 
@@ -104,4 +111,55 @@ public class ReviewService {
                 .reviews(reviewRepository.findByMemberId(memberId))
                 .build();
     }
+
+    public MontlyRateResponseDto findMontlyRate(String productId) {
+        List<Rate> rating = new ArrayList<>();
+
+        LocalDateTime now = LocalDateTime.now();
+        Rate m1 = new Rate(now, 0.0);
+        AtomicInteger c1 = new AtomicInteger();
+        Rate m2 = new Rate(now.minusMonths(1), 0.0);
+        AtomicInteger c2 = new AtomicInteger();
+        Rate m3 = new Rate(now.minusMonths(2), 0.0);
+        AtomicInteger c3 = new AtomicInteger();
+        Rate m4 = new Rate(now.minusMonths(3), 0.0);
+        AtomicInteger c4 = new AtomicInteger();
+
+        log.info(reviewRepository.findAllByProductId(productId).toString());
+
+        reviewRepository.findAllByProductId(productId).stream()
+                .forEach(review -> {
+                    Month review_month = review.getDate().getMonth();
+                    if (review_month.equals(m1.getDate().getMonth())) {
+                        m1.setRate(m1.getRate() + review.getRating());
+                        c1.getAndIncrement();
+                    } else if (review_month.equals(m2.getDate().getMonth())) {
+                        m2.setRate(m2.getRate()+review.getRating());
+                        c2.getAndIncrement();
+                    } else if (review_month.equals(m3.getDate().getMonth())) {
+                        m3.setRate(m3.getRate()+review.getRating());
+                        c3.getAndIncrement();
+                    } else if (review_month.equals(m4.getDate().getMonth())) {
+                        m4.setRate(m4.getRate()+review.getRating());
+                        c4.getAndIncrement();
+                    }
+                });
+
+        log.info(m1.toString());
+        log.info(m2.toString());
+        log.info(m3.toString());
+        log.info(m4.toString());
+
+        if (c1.get() != 0) m1.setRate(m1.getRate()/c1.get());  rating.add(m1);
+        if (c2.get() != 0) m2.setRate(m2.getRate()/c2.get());  rating.add(m2);
+        if (c3.get() != 0) m3.setRate(m3.getRate()/c3.get());  rating.add(m3);
+        if (c4.get() != 0) m4.setRate(m4.getRate()/c4.get());  rating.add(m4);
+
+        return MontlyRateResponseDto.builder()
+                .rating(rating)
+                .build();
+    }
+
+//    public Object findWeeklyRate(String productId) {
+//    }
 }
