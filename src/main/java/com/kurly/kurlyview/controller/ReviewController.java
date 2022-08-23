@@ -59,8 +59,8 @@ public class ReviewController {
     /**
      * 상품 리뷰 주간 평점
      */
-    @GetMapping("/products/{productId}/review/weeklly-rate")
-    public ResponseEntity<?> getReviewWeeklyRate(@PathVariable String productId) {
-        return ResponseEntity.ok(reviewService.findWeeklyRate(productId));
-    }
+//    @GetMapping("/products/{productId}/review/weeklly-rate")
+//    public ResponseEntity<?> getReviewWeeklyRate(@PathVariable String productId) {
+//        return ResponseEntity.ok(reviewService.findWeeklyRate(productId));
+//    }
 }
