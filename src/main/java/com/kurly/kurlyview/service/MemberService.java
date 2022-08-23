@@ -133,8 +133,9 @@ public class MemberService {
 
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
 
-        if (kurlyviews == null)
-            throw new IllegalArgumentException("구독 중인 컬리뷰가 존재하지 않습니다.");
+        if (kurlyviews == null) {
+            kurlyviews = new ArrayList<>();
+        }
 
         if (kurlyviews.stream().anyMatch(kurlyview -> kurlyview.getId().equals(id)))
             is_follow = true;
@@ -159,9 +160,14 @@ public class MemberService {
 
         List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
 
-        kurlyviews.stream().forEach(kurlyview ->
-                reviews.addAll(reviewRepository.findByMemberId(kurlyview.getId()))
-        );
+        if (kurlyviews == null) {
+            kurlyviews = new ArrayList<>();
+        }
+        else {
+            kurlyviews.stream().forEach(kurlyview ->
+                    reviews.addAll(reviewRepository.findByMemberId(kurlyview.getId()))
+            );
+        }
 
         reviews.sort(Comparator.comparing(Review::getDate).reversed());
 
