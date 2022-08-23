@@ -161,11 +161,10 @@ public class ReviewService {
                     }
                 });
 
-        if (c1.get() != 0) m1.setRate(m1.getRate()/c1.get());  rating.add(m1);
-        if (c2.get() != 0) m2.setRate(m2.getRate()/c2.get());  rating.add(m2);
-        if (c3.get() != 0) m3.setRate(m3.getRate()/c3.get());  rating.add(m3);
         if (c4.get() != 0) m4.setRate(m4.getRate()/c4.get());  rating.add(m4);
-
+        if (c3.get() != 0) m3.setRate(m3.getRate()/c3.get());  rating.add(m3);
+        if (c2.get() != 0) m2.setRate(m2.getRate()/c2.get());  rating.add(m2);
+        if (c1.get() != 0) m1.setRate(m1.getRate()/c1.get());  rating.add(m1);
         log.info(rating.toString());
         return MontlyRateResponseDto.builder()
                 .rating(rating)
@@ -263,13 +262,13 @@ public class ReviewService {
             d4.setRate(d4.getRate()/c4.get());
         }
 
-        for (Rate m : new Rate[]{m1, m2, m3, m4})
+        for (Rate m : new Rate[]{m4, m3, m2, m1})
             rating.add(m);
-        for (Rate f : new Rate[]{f1, f2, f3, f4})
+        for (Rate f : new Rate[]{f4, f3, f2, f1})
             fresh_score.add(f);
-        for (Rate t :new Rate[]{t1, t2, t3, t4})
+        for (Rate t :new Rate[]{t4, t3, t2, t1})
             taste_score.add(t);
-        for (Rate d : new Rate[]{d1, d2, d3, d3})
+        for (Rate d : new Rate[]{d4, d3, d2, d1})
             delivery_score.add(d);
 
         log.info(rating.toString());
