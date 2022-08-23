@@ -7,6 +7,7 @@ import com.kurly.kurlyview.dto.LeaveReviewRequestDto;
 import com.kurly.kurlyview.dto.MontlyRateResponseDto;
 import com.kurly.kurlyview.dto.UserReviewListResponseDto;
 import com.kurly.kurlyview.repository.MemberRepository;
+import com.kurly.kurlyview.repository.ProductRepository;
 import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ReviewService {
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
+    private final ProductRepository productRepository;
     private final JwtTokenProvider tokenProvider;
 
     /**
@@ -113,6 +115,20 @@ public class ReviewService {
     }
 
     public MontlyRateResponseDto findMontlyRate(String productId) {
+
+        int product_type = productRepository.findById(productId).get().getType();
+
+        if (product_type == 0) {
+            return nonFreshProductMontlyRate(productId);
+        }
+        else if (product_type == 1) {
+            return freshProductMontlyRate(productId);
+        }
+        return MontlyRateResponseDto.builder().build();
+    }
+
+    public MontlyRateResponseDto nonFreshProductMontlyRate(String productId)
+    {
         List<Rate> rating = new ArrayList<>();
 
         LocalDateTime now = LocalDateTime.now();
@@ -145,18 +161,127 @@ public class ReviewService {
                     }
                 });
 
-        log.info(m1.toString());
-        log.info(m2.toString());
-        log.info(m3.toString());
-        log.info(m4.toString());
-
         if (c1.get() != 0) m1.setRate(m1.getRate()/c1.get());  rating.add(m1);
         if (c2.get() != 0) m2.setRate(m2.getRate()/c2.get());  rating.add(m2);
         if (c3.get() != 0) m3.setRate(m3.getRate()/c3.get());  rating.add(m3);
         if (c4.get() != 0) m4.setRate(m4.getRate()/c4.get());  rating.add(m4);
 
+        log.info(rating.toString());
         return MontlyRateResponseDto.builder()
                 .rating(rating)
+                .build();
+    }
+
+    public MontlyRateResponseDto freshProductMontlyRate(String productId)
+    {
+        List<Rate> rating = new ArrayList<>();
+        List<Rate> fresh_score = new ArrayList<>();
+        List<Rate> taste_score = new ArrayList<>();
+        List<Rate> delivery_score = new ArrayList<>();
+
+        // rating
+        LocalDateTime now = LocalDateTime.now();
+        Rate m1 = new Rate(now, 0.0);
+        AtomicInteger c1 = new AtomicInteger();
+        Rate m2 = new Rate(now.minusMonths(1), 0.0);
+        AtomicInteger c2 = new AtomicInteger();
+        Rate m3 = new Rate(now.minusMonths(2), 0.0);
+        AtomicInteger c3 = new AtomicInteger();
+        Rate m4 = new Rate(now.minusMonths(3), 0.0);
+        AtomicInteger c4 = new AtomicInteger();
+
+        // fresh_score
+        Rate f1 = new Rate(now, 0.0);
+        Rate f2 = new Rate(now.minusMonths(1), 0.0);
+        Rate f3 = new Rate(now.minusMonths(2), 0.0);
+        Rate f4 = new Rate(now.minusMonths(3), 0.0);
+
+        // taste_score
+        Rate t1 = new Rate(now, 0.0);
+        Rate t2 = new Rate(now.minusMonths(1), 0.0);
+        Rate t3 = new Rate(now.minusMonths(2), 0.0);
+        Rate t4 = new Rate(now.minusMonths(3), 0.0);
+
+        // delivery_score
+        Rate d1 = new Rate(now, 0.0);
+        Rate d2 = new Rate(now.minusMonths(1), 0.0);
+        Rate d3 = new Rate(now.minusMonths(2), 0.0);
+        Rate d4 = new Rate(now.minusMonths(3), 0.0);
+
+        reviewRepository.findAllByProductId(productId).stream()
+                .forEach(review -> {
+                    Month review_month = review.getDate().getMonth();
+                    if (review_month.equals(m1.getDate().getMonth())) {
+                        m1.setRate(m1.getRate() + review.getRating());
+                        f1.setRate(f1.getRate()+ review.getFreshScore());
+                        t1.setRate(t1.getRate()+ review.getTasteScore());
+                        d1.setRate(d1.getRate()+ review.getDeliveryScore());
+                        c1.getAndIncrement();
+                    } else if (review_month.equals(m2.getDate().getMonth())) {
+                        m2.setRate(m2.getRate()+review.getRating());
+                        f2.setRate(f2.getRate()+ review.getFreshScore());
+                        t2.setRate(t2.getRate()+ review.getTasteScore());
+                        d2.setRate(d2.getRate()+ review.getDeliveryScore());
+                        c2.getAndIncrement();
+                    } else if (review_month.equals(m3.getDate().getMonth())) {
+                        m3.setRate(m3.getRate()+review.getRating());
+                        f3.setRate(f3.getRate()+ review.getFreshScore());
+                        t3.setRate(t3.getRate()+ review.getTasteScore());
+                        d3.setRate(d3.getRate()+ review.getDeliveryScore());
+                        c3.getAndIncrement();
+                    } else if (review_month.equals(m4.getDate().getMonth())) {
+                        m4.setRate(m4.getRate()+review.getRating());
+                        f4.setRate(f4.getRate()+ review.getFreshScore());
+                        t4.setRate(t4.getRate()+ review.getTasteScore());
+                        d4.setRate(d4.getRate()+ review.getDeliveryScore());
+                        c4.getAndIncrement();
+                    }
+                });
+
+        if (c1.get() != 0){
+            m1.setRate(m1.getRate()/c1.get());
+            f1.setRate(f1.getRate()/c1.get());
+            t1.setRate(t1.getRate()/c1.get());
+            d1.setRate(d1.getRate()/c1.get());
+        }
+        if (c2.get() != 0){
+            m2.setRate(m2.getRate()/c2.get());
+            f2.setRate(f2.getRate()/c2.get());
+            t2.setRate(t2.getRate()/c2.get());
+            d2.setRate(d2.getRate()/c2.get());
+        }
+        if (c3.get() != 0) {
+            m3.setRate(m3.getRate()/c3.get());
+            f3.setRate(f3.getRate()/c3.get());
+            t3.setRate(t3.getRate()/c3.get());
+            d3.setRate(d3.getRate()/c3.get());
+        }
+        if (c4.get() != 0){
+            m4.setRate(m4.getRate()/c4.get());
+            f4.setRate(f4.getRate()/c4.get());
+            t4.setRate(t4.getRate()/c4.get());
+            d4.setRate(d4.getRate()/c4.get());
+        }
+
+        for (Rate m : new Rate[]{m1, m2, m3, m4})
+            rating.add(m);
+        for (Rate f : new Rate[]{f1, f2, f3, f4})
+            fresh_score.add(f);
+        for (Rate t :new Rate[]{t1, t2, t3, t4})
+            taste_score.add(t);
+        for (Rate d : new Rate[]{d1, d2, d3, d3})
+            delivery_score.add(d);
+
+        log.info(rating.toString());
+        log.info(fresh_score.toString());
+        log.info(taste_score.toString());
+        log.info(delivery_score.toString());
+
+        return MontlyRateResponseDto.builder()
+                .rating(rating)
+                .fresh_score(fresh_score)
+                .taste_score(taste_score)
+                .delivery_score(delivery_score)
                 .build();
     }
 
