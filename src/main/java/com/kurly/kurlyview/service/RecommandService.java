@@ -55,8 +55,6 @@ public class RecommandService {
             });
         }
 
-        log.info(recommand_products.toString());
-
         recommand_products.stream().distinct().forEach( product_id -> {
             Product product = productRepository.findById(product_id).get();
             recommand_products_preview.add(
