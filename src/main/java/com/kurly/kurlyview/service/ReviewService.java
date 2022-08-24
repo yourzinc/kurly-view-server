@@ -12,6 +12,8 @@ import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +88,7 @@ public class ReviewService {
      * 상품의 리뷰 전체
      */
     public List<Review> findProductReviews(String productId) {
-        return reviewRepository.findAllByProductId(productId);
+        return reviewRepository.findAllByProductId(productId, PageRequest.of(0,2000,Sort.by(Sort.Direction.DESC, "date")));
     }
 
     /**
