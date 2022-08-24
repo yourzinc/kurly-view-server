@@ -33,7 +33,6 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
 
-        System.out.println((String) authentication.getPrincipal());
         return Jwts.builder()
                 .setSubject((String) authentication.getPrincipal()) // 사용자
                 .setIssuedAt(new Date()) // 현재 시간 기반으로 생성
@@ -49,9 +48,6 @@ public class JwtTokenProvider {
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
-
-        log.info(("id:" +claims.getId()));
-        log.info("subject:"+claims.getSubject());
 
         return claims.getSubject();
     }
