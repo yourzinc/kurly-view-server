@@ -12,6 +12,8 @@ import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,26 +88,13 @@ public class ReviewService {
      * 상품의 리뷰 전체
      */
     public List<Review> findProductReviews(String productId) {
-        return reviewRepository.findAllByProductId(productId);
+        return reviewRepository.findAllByProductId(productId, PageRequest.of(0,2000,Sort.by(Sort.Direction.DESC, "date")));
     }
 
     /**
      * 사용자의 리뷰 전체
      */
     public UserReviewListResponseDto findUserReviews(String memberId) {
-
-        // token 으로 로그인한 회원인지 확인
-        // 구독중인 kurlyview 인지 확인하기
-        // token 이 없거나 유효하지 않다면 -> 구독중이 아니다 라고 처리
-
-//        boolean is_follow = false;
-//
-//        if (token != null) {
-//            is_follow = memberRepository.findById(tokenProvider.getUserId(token)).get()
-//                    .getKurlyviews().stream()
-//                    .anyMatch(kurlyview -> kurlyview.equals(memberId));
-//        }
-
 
         // memberId가 작성한 리뷰 검색
         return UserReviewListResponseDto.builder()

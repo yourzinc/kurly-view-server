@@ -8,6 +8,8 @@ import com.kurly.kurlyview.repository.ReviewRepository;
 import com.kurly.kurlyview.security.jwt.JwtTokenProvider;
 import com.kurly.kurlyview.security.jwt.UserAuthentication;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.SpringTransactionAnnotationParser;
@@ -165,8 +167,7 @@ public class MemberService {
         }
         else {
             kurlyviews.stream().forEach(kurlyview ->
-                    reviews.addAll(reviewRepository.findByMemberId(kurlyview.getId()))
-            );
+                    reviews.addAll(reviewRepository.findByMemberId(kurlyview.getId(), PageRequest.of(0, 2000, Sort.by(Sort.Direction.DESC, "date")))));
         }
 
         reviews.sort(Comparator.comparing(Review::getDate).reversed());
