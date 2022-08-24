@@ -94,19 +94,6 @@ public class ReviewService {
      */
     public UserReviewListResponseDto findUserReviews(String memberId) {
 
-        // token 으로 로그인한 회원인지 확인
-        // 구독중인 kurlyview 인지 확인하기
-        // token 이 없거나 유효하지 않다면 -> 구독중이 아니다 라고 처리
-
-//        boolean is_follow = false;
-//
-//        if (token != null) {
-//            is_follow = memberRepository.findById(tokenProvider.getUserId(token)).get()
-//                    .getKurlyviews().stream()
-//                    .anyMatch(kurlyview -> kurlyview.equals(memberId));
-//        }
-
-
         // memberId가 작성한 리뷰 검색
         return UserReviewListResponseDto.builder()
                 .name(memberRepository.findById(memberId).get().getName())
