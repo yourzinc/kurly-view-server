@@ -280,11 +280,6 @@ public class ReviewService {
         for (Rate d : new Rate[]{d4, d3, d2, d1})
             delivery_score.add(d);
 
-        log.info(rating.toString());
-        log.info(fresh_score.toString());
-        log.info(taste_score.toString());
-        log.info(delivery_score.toString());
-
         return ReviewRateResponseDto.builder()
                 .rating(rating)
                 .fresh_score(fresh_score)
@@ -307,8 +302,6 @@ public class ReviewService {
         AtomicInteger c3 = new AtomicInteger();
         Rate m4 = new Rate(now.minusWeeks(3), 0.0);
         AtomicInteger c4 = new AtomicInteger();
-
-        log.info(reviewRepository.findAllByProductId(productId).toString());
 
         reviewRepository.findAllByProductId(productId).stream()
                 .forEach(review -> {
@@ -336,7 +329,6 @@ public class ReviewService {
         if (c3.get() != 0) m3.setRate(m3.getRate()/c3.get());  rating.add(m3);
         if (c2.get() != 0) m2.setRate(m2.getRate()/c2.get());  rating.add(m2);
         if (c1.get() != 0) m1.setRate(m1.getRate()/c1.get());  rating.add(m1);
-        log.info(rating.toString());
 
         return ReviewRateResponseDto.builder()
                 .rating(rating)
@@ -457,11 +449,6 @@ public class ReviewService {
             taste_score.add(t);
         for (Rate d : new Rate[]{d4, d3, d2, d1})
             delivery_score.add(d);
-
-        log.info(rating.toString());
-        log.info(fresh_score.toString());
-        log.info(taste_score.toString());
-        log.info(delivery_score.toString());
 
         return ReviewRateResponseDto.builder()
                 .rating(rating)
