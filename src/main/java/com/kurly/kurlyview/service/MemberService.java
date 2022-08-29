@@ -145,22 +145,10 @@ public class MemberService {
         return is_follow;
     }
 
-    public ReviewListResponseDto findAllKurlyview(String token) {
+    public ReviewListResponseDto findAllKurlyviewReviews(String token) {
         List<Review> reviews = new ArrayList<Review>();
 
-        String _id = tokenProvider.getUserIdFromJWT(token);
-        System.out.println("is-following : " + _id);
-
-        // 이메일 NULL 처리
-        if (_id == null) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-
-        System.out.println("_id : " + _id);
-        Member member = memberRepository.findById(_id)
-                .orElseThrow(() -> new IllegalArgumentException("가입된 ID이 아닙니다."));
-
-        List<Member.Kurlyview> kurlyviews = member.getKurlyviews();
+        List<Member.Kurlyview> kurlyviews = kurlyviewList(token);
 
         if (kurlyviews == null) {
             kurlyviews = new ArrayList<>();
@@ -175,5 +163,26 @@ public class MemberService {
         return ReviewListResponseDto.builder()
                 .reviews(reviews)
                 .build();
+    }
+
+    public KurlyviewResponseDto findAllKurlyview(String token) {
+
+        return KurlyviewResponseDto.builder()
+                .kurlyviews(kurlyviewList(token))
+                .build();
+    }
+
+    public List<Member.Kurlyview> kurlyviewList(String token) {
+        String _id = tokenProvider.getUserIdFromJWT(token);
+
+        // 이메일 NULL 처리
+        if (_id == null) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        Member member = memberRepository.findById(_id)
+                .orElseThrow(() -> new IllegalArgumentException("가입된 ID이 아닙니다."));
+
+        return member.getKurlyviews();
     }
 }

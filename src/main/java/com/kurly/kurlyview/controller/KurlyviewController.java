@@ -20,9 +20,9 @@ public class KurlyviewController {
     private final RecommandService recommandService;
 
     @GetMapping("/kurlyview-reviews")
-    public ResponseEntity<?> getKurlyviews(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getKurlyviewReviews(@RequestHeader("Authorization") String token) {
         System.out.println("getKurlyviews");
-        return ResponseEntity.ok(memberService.findAllKurlyview(token));
+        return ResponseEntity.ok(memberService.findAllKurlyviewReviews(token));
     }
 
     @GetMapping("/kurlyviews/{memberId}")
@@ -38,6 +38,14 @@ public class KurlyviewController {
     @GetMapping("/kurlyviews/{memberId}/status")
     public ResponseEntity<?> getSubscribeStatus(@RequestHeader("Authorization") String token, @PathVariable String memberId){
         return ResponseEntity.ok(memberService.subscribeStatue(token, memberId));
+    }
+
+    /**
+     * 구독중인 컬리뷰 목록
+     */
+    @GetMapping("/kurlyviews")
+    public ResponseEntity<?> getKurlyviews(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(memberService.findAllKurlyview(token));
     }
 
     /**
