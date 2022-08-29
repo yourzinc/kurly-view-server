@@ -19,7 +19,7 @@ public class KurlyviewController {
     private final MemberService memberService;
     private final RecommandService recommandService;
 
-    @GetMapping("/kurlyviews")
+    @GetMapping("/kurlyview-reviews")
     public ResponseEntity<?> getKurlyviews(@RequestHeader("Authorization") String token) {
         System.out.println("getKurlyviews");
         return ResponseEntity.ok(memberService.findAllKurlyview(token));
